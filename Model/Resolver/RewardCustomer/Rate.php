@@ -48,15 +48,16 @@ class Rate extends AbstractReward
 
     /**
      * RewardRate constructor.
+     *
      * @param RewardRateRepository $rewardRateRepository
      * @param GetCustomer $getCustomer
      */
     public function __construct(
         RewardRateRepository $rewardRateRepository,
         GetCustomer $getCustomer
-    ){
+    ) {
         $this->rewardRateRepository = $rewardRateRepository;
-        $this->getCustomer = $getCustomer;
+        $this->getCustomer          = $getCustomer;
     }
 
     /**
@@ -73,7 +74,7 @@ class Rate extends AbstractReward
         parent::resolve($field, $context, $info, $value, $args);
 
         /** @var ContextInterface $context */
-        $customer = $this->getCustomer->execute($context);
+        $customer  = $this->getCustomer->execute($context);
         $direction = $args['direction'];
 
         return $this->rewardRateRepository->getRateByCustomer(

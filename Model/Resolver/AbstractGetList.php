@@ -46,6 +46,11 @@ abstract class AbstractGetList extends AbstractReward
      */
     protected $searchCriteriaBuilder;
 
+    /**
+     * AbstractGetList constructor.
+     *
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
@@ -70,6 +75,7 @@ abstract class AbstractGetList extends AbstractReward
         $searchCriteria->setCurrentPage($args['currentPage']);
         $searchCriteria->setPageSize($args['pageSize']);
         $searchResult = $this->getSearchResult($context, $searchCriteria);
+
         return [
             'total_count' => $searchResult->getTotalCount(),
             'items'       => $searchResult->getItems(),
@@ -79,6 +85,7 @@ abstract class AbstractGetList extends AbstractReward
     /**
      * @param SearchCriteriaInterface $searchCriteria
      * @param ContextInterface $context
+     *
      * @return mixed
      */
     abstract protected function getSearchResult($context, $searchCriteria);

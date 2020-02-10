@@ -28,6 +28,7 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
 use Mageplaza\RewardPointsUltimate\Helper\Calculation as HelperCalculation;
+use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
 /**
  * Class SpendingConfiguration
@@ -58,6 +59,9 @@ class SpendingConfiguration extends AbstractReward
         $this->helperCalculation = $helperCalculation;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
         parent::resolve($field, $context, $info, $value, $args);

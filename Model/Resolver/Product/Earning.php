@@ -40,7 +40,7 @@ class Earning implements ResolverInterface
     public function __construct(
         CatalogRuleFactory $catalogRuleFactory,
         Point $pointHelper
-    ){
+    ) {
         $this->catalogRule = $catalogRuleFactory;
         $this->pointHelper = $pointHelper;
     }
@@ -60,11 +60,11 @@ class Earning implements ResolverInterface
         }
 
         /** @var Product $product */
-        $product = $value['model'];
+        $product   = $value['model'];
         $pointEarn = $this->catalogRule->create()->getPointEarnFromRules($product);
 
         return [
-            'earning_point' => $pointEarn,
+            'earning_point'        => $pointEarn,
             'earning_point_format' => $this->pointHelper->format($pointEarn)
         ];
     }

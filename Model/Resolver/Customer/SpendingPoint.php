@@ -72,9 +72,9 @@ class SpendingPoint implements ResolverInterface
         TotalsInformation $totalInformation
     ) {
         $this->quoteAddressFactory = $quoteAddressFactory;
-        $this->spendingManagement = $spendingManagement;
-        $this->getCartForUser = $getCartForUser;
-        $this->totalInformation = $totalInformation;
+        $this->spendingManagement  = $spendingManagement;
+        $this->getCartForUser      = $getCartForUser;
+        $this->totalInformation    = $totalInformation;
     }
 
     /**
@@ -83,16 +83,21 @@ class SpendingPoint implements ResolverInterface
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
         $store = $context->getExtensionAttributes()->getStore();
-        $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId(), (int)$store->getId());
+        $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId(), (int) $store->getId());
 
-        $addressInput = $args['address_information']['address'];
+        $addressInput    = $args['address_information']['address'];
         $shippingMethods = $args['address_information']['shipping_methods'];
-        $quoteAddress = $this->quoteAddressFactory->createBasedOnInputData($addressInput);
+        $quoteAddress    = $this->quoteAddressFactory->createBasedOnInputData($addressInput);
         $this->totalInformation->setAddress($quoteAddress);
         $this->totalInformation->setShippingCarrierCode($shippingMethods['carrier_code']);
         $this->totalInformation->setShippingMethodCode($shippingMethods['method_code']);
 
-        $totals = $this->spendingManagement->calculate($quote->getId(), $this->totalInformation, $args['points'], $args['rule_id']);
+        $totals = $this->spendingManagement->calculate(
+            $quote->getId(),
+            $this->totalInformation,
+            $args['points'],
+            $args['rule_id']
+        );
 
         return $totals->getTotalSegments();
     }

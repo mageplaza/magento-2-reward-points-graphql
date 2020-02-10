@@ -47,14 +47,15 @@ class Account implements ResolverInterface
     protected $cryptHelper;
 
     /**
-     * RewardCustomer constructor.
+     * Account constructor.
+     *
      * @param RewardCustomerFactory $rewardCustomerFactory
-     * @param Data $helperData
+     * @param Crypt $cryptHelper
      */
-    public function __construct( RewardCustomerFactory $rewardCustomerFactory, Crypt $cryptHelper)
+    public function __construct(RewardCustomerFactory $rewardCustomerFactory, Crypt $cryptHelper)
     {
         $this->rewardCustomerFactory = $rewardCustomerFactory;
-        $this->cryptHelper = $cryptHelper;
+        $this->cryptHelper           = $cryptHelper;
     }
 
     /**
@@ -73,11 +74,11 @@ class Account implements ResolverInterface
 
         $customer = $value['model'];
 
-        $rewardCustomer = $this->rewardCustomerFactory->create()->loadByCustomerId($customer->getId());
-        $data = $rewardCustomer->toArray();
-        $data['point_spent'] = $rewardCustomer->getPointSpent();
+        $rewardCustomer       = $this->rewardCustomerFactory->create()->loadByCustomerId($customer->getId());
+        $data                 = $rewardCustomer->toArray();
+        $data['point_spent']  = $rewardCustomer->getPointSpent();
         $data['point_earned'] = $rewardCustomer->getPointEarned();
-        $data['refer_code'] = $this->cryptHelper->encrypt($customer->getId());
+        $data['refer_code']   = $this->cryptHelper->encrypt($customer->getId());
 
         return $data;
     }

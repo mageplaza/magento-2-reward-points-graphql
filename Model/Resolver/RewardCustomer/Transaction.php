@@ -23,12 +23,18 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\RewardCustomer;
 
-use Magento\Framework\Api\Search\SearchCriteria;
+use Magento\Framework\Api\Search\SearchCriteriaInterface;
+use Magento\Framework\GraphQl\Exception\GraphQlAuthenticationException;
+use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
+use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
 use Magento\GraphQl\Model\Query\ContextInterface;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractGetList;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
+use Mageplaza\RewardPointsUltimate\Api\Data\TransactionSearchResultInterface;
 use Mageplaza\RewardPointsUltimate\Model\TransactionRepository;
+use Magento\Framework\GraphQl\Query\Resolver\ContextInterface as ResolverContextInterface;
 
 /**
  * Class Transaction
@@ -69,13 +75,13 @@ class Transaction extends AbstractGetList
     }
 
     /**
-     * @param \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context
-     * @param SearchCriteria $searchCriteria
-     * @return \Mageplaza\RewardPointsUltimate\Api\Data\TransactionSearchResultInterface|mixed
-     * @throws \Magento\Framework\GraphQl\Exception\GraphQlAuthenticationException
-     * @throws \Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException
-     * @throws \Magento\Framework\GraphQl\Exception\GraphQlInputException
-     * @throws \Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException
+     * @param ResolverContextInterface $context
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return TransactionSearchResultInterface|mixed
+     * @throws GraphQlAuthenticationException
+     * @throws GraphQlAuthorizationException
+     * @throws GraphQlInputException
+     * @throws GraphQlNoSuchEntityException
      */
     public function getSearchResult($context, $searchCriteria)
     {
