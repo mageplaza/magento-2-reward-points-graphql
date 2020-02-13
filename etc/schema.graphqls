@@ -31,7 +31,7 @@ type Mutation {
         send_from: String! @doc(description: "Send from")
         emails: String! @doc(description: "Emails")
         message: String! @doc(description: "Message")
-    ): Boolean @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\Invite") @doc(description: "Invite")
+    ): Boolean @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\Invite") @doc(description: "Invite")
 }
 
 ## ======================================== MpRewardSpendingPoint ======================================================
