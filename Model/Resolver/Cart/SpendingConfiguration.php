@@ -29,6 +29,7 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
 use Mageplaza\RewardPointsUltimate\Helper\Calculation as HelperCalculation;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 
 /**
  * Class SpendingConfiguration
@@ -48,15 +49,18 @@ class SpendingConfiguration extends AbstractReward
 
     /**
      * SpendingConfiguration constructor.
+     * @param Data $helperData
      * @param GetCartForUser $getCartForUser
      * @param HelperCalculation $helperCalculation
      */
     public function __construct(
+        Data $helperData,
         GetCartForUser $getCartForUser,
         HelperCalculation $helperCalculation
     ) {
         $this->getCartForUser = $getCartForUser;
         $this->helperCalculation = $helperCalculation;
+        parent::__construct($helperData);
     }
 
     /**
@@ -69,12 +73,14 @@ class SpendingConfiguration extends AbstractReward
         if (empty($args['cart_id'])) {
             throw new GraphQlInputException(__('Required parameter "cart_id" is missing'));
         }
-        $maskedCartId = $args['cart_id'];
 
-        $currentUserId = $context->getUserId();
-        $store = $context->getExtensionAttributes()->getStore();
-        $storeId = (int)$store->getId();
-        $quote = $this->getCartForUser->execute($maskedCartId, $currentUserId, $storeId);
+        if ($this->helperData->versionCompare('2.3.3')) {
+            $store = $context->getExtensionAttributes()->getStore();
+            $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId(), (int)$store->getId());
+        } else {
+            $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId());
+        }
+
         $this->helperCalculation->setQuote($quote);
 
         return $this->helperCalculation->getSpendingConfiguration($quote);

@@ -26,7 +26,7 @@ namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\RewardCustomer;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Config\Element\Field;
-use Magento\GraphQl\Model\Query\ContextInterface;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 use Mageplaza\RewardPointsUltimate\Model\RewardRateRepository;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
@@ -47,17 +47,20 @@ class Rate extends AbstractReward
     protected $getCustomer;
 
     /**
-     * RewardRate constructor.
-     *
+     * Rate constructor.
+     * @param Data $helperData
      * @param RewardRateRepository $rewardRateRepository
      * @param GetCustomer $getCustomer
      */
     public function __construct(
+        Data $helperData,
         RewardRateRepository $rewardRateRepository,
         GetCustomer $getCustomer
     ) {
         $this->rewardRateRepository = $rewardRateRepository;
         $this->getCustomer          = $getCustomer;
+
+        parent::__construct($helperData);
     }
 
     /**
@@ -73,7 +76,9 @@ class Rate extends AbstractReward
 
         parent::resolve($field, $context, $info, $value, $args);
 
-        /** @var ContextInterface $context */
+        /** @var \Magento\GraphQl\Model\Query\ContextInterface $context
+         * \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context class is available < 2.3.3
+         */
         $customer  = $this->getCustomer->execute($context);
         $direction = $args['direction'];
 

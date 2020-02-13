@@ -29,12 +29,12 @@ use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
-use Magento\GraphQl\Model\Query\ContextInterface;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractGetList;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Mageplaza\RewardPointsUltimate\Api\Data\InvitationSearchResultInterface;
 use Mageplaza\RewardPointsUltimate\Model\InvitationRepository;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface as ResolverContextInterface;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 
 /**
  * Class Invitations
@@ -58,20 +58,21 @@ class Invitation extends AbstractGetList
     protected $invitationRepository;
 
     /**
-     * Invitations constructor.
-     *
+     * Invitation constructor.
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Data $helperData
      * @param GetCustomer $getCustomer
      * @param InvitationRepository $invitationRepository
      */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
+        Data $helperData,
         GetCustomer $getCustomer,
         InvitationRepository $invitationRepository
     ) {
         $this->getCustomer          = $getCustomer;
         $this->invitationRepository = $invitationRepository;
-        parent::__construct($searchCriteriaBuilder);
+        parent::__construct($searchCriteriaBuilder, $helperData);
     }
 
     /**
@@ -85,7 +86,9 @@ class Invitation extends AbstractGetList
      */
     public function getSearchResult($context, $searchCriteria)
     {
-        /** @var ContextInterface $context */
+        /** @var \Magento\GraphQl\Model\Query\ContextInterface $context
+         * \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context class is available < 2.3.3
+         */
         $customer = $this->getCustomer->execute($context);
 
         return $this->invitationRepository->getReferralByEmail($customer->getEmail());

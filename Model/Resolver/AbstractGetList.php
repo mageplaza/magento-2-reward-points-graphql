@@ -29,6 +29,7 @@ use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 
 /**
  * Class AbstractGetList
@@ -48,13 +49,15 @@ abstract class AbstractGetList extends AbstractReward
 
     /**
      * AbstractGetList constructor.
-     *
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Data $helperData
      */
     public function __construct(
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        Data $helperData
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        parent::__construct($helperData);
     }
 
     /**

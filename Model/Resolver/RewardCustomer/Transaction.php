@@ -29,10 +29,10 @@ use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
-use Magento\GraphQl\Model\Query\ContextInterface;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractGetList;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Mageplaza\RewardPointsUltimate\Api\Data\TransactionSearchResultInterface;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 use Mageplaza\RewardPointsUltimate\Model\TransactionRepository;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface as ResolverContextInterface;
 
@@ -58,20 +58,21 @@ class Transaction extends AbstractGetList
     protected $transactionRepository;
 
     /**
-     * Customer constructor.
-     *
+     * Transaction constructor.
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Data $helperData
      * @param GetCustomer $getCustomer
      * @param TransactionRepository $transactionRepository
      */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
+        Data $helperData,
         GetCustomer $getCustomer,
         TransactionRepository $transactionRepository
     ) {
-        $this->getCustomer = $getCustomer;
+        $this->getCustomer           = $getCustomer;
         $this->transactionRepository = $transactionRepository;
-        parent::__construct($searchCriteriaBuilder);
+        parent::__construct($searchCriteriaBuilder, $helperData);
     }
 
     /**
@@ -85,9 +86,16 @@ class Transaction extends AbstractGetList
      */
     public function getSearchResult($context, $searchCriteria)
     {
-        /** @var ContextInterface $context */
+        /** @var \Magento\GraphQl\Model\Query\ContextInterface $context
+         * \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context class is available < 2.3.3
+         */
         $customer = $this->getCustomer->execute($context);
 
-        return $this->transactionRepository->getListByCustomerId($searchCriteria, $customer->getId());
+        $result =  $this->transactionRepository->getListByCustomerId($searchCriteria, $customer->getId());
+        foreach ($result->getItems() as $item) {
+            $item->setComment($item->getTitle());
+        }
+
+        return $result;
     }
 }

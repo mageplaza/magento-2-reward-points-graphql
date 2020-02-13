@@ -104,8 +104,6 @@ input MpRewardTransactionsFilterInput {
     created_at : FilterTypeInput @doc(description: "Created At")
     expiration_date : FilterTypeInput @doc(description: "Expiration Date")
     expire_email_sent : FilterTypeInput @doc(description: "Expire Email Sent")
-    comment : FilterTypeInput @doc(description: "Comment")
-    expire_after : FilterTypeInput @doc(description: "Expire After")
 }
 
 type MpRewardTransactionsListOutput {
@@ -129,7 +127,6 @@ type MpRewardTransactionsOutput {
     expiration_date : String @doc(description: "Expiration Date")
     expire_email_sent : String @doc(description: "Expire Email Sent")
     comment : String @doc(description: "Comment")
-    expire_after : String @doc(description: "Expire After")
 }
 
 ## ========================================= Reward Invitation =======================================================

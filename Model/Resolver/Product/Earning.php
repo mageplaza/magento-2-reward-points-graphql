@@ -59,6 +59,10 @@ class Earning implements ResolverInterface
             throw new LocalizedException(__('"model" value should be specified'));
         }
 
+        if (!$this->pointHelper->isEnabled()) {
+            return [];
+        }
+
         /** @var Product $product */
         $product   = $value['model'];
         $pointEarn = $this->catalogRule->create()->getPointEarnFromRules($product);

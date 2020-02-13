@@ -27,15 +27,15 @@ use Magento\Customer\Model\Customer;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Framework\GraphQl\Query\ResolverInterface;
-use Magento\GraphQl\Model\Query\ContextInterface;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 use Mageplaza\RewardPointsUltimate\Model\InvitationRepository;
+use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
 /**
  * Class Invite
  * @package Mageplaza\RewardPointsGraphQl\Model\Resolver\Customer
  */
-class Invite implements ResolverInterface
+class Invite extends AbstractReward
 {
     /**
      * @var InvitationRepository
@@ -49,16 +49,19 @@ class Invite implements ResolverInterface
 
     /**
      * Invite constructor.
-     *
      * @param InvitationRepository $invitationRepository
      * @param GetCustomer $getCustomer
+     * @param Data $helperData
      */
     public function __construct(
         InvitationRepository $invitationRepository,
-        GetCustomer $getCustomer
+        GetCustomer $getCustomer,
+        Data $helperData
     ) {
         $this->invitationRepository = $invitationRepository;
         $this->getCustomer          = $getCustomer;
+
+        parent::__construct($helperData);
     }
 
     /**
@@ -66,8 +69,12 @@ class Invite implements ResolverInterface
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        /** @var ContextInterface $context */
+        parent::resolve($field, $context, $info, $value, $args);
+
         /** @var Customer $customer */
+        /** @var \Magento\GraphQl\Model\Query\ContextInterface $context
+         * \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context class is available < 2.3.3
+         */
         $customer = $this->getCustomer->execute($context);
 
         return $this->invitationRepository->sendInvitation(

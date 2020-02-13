@@ -25,17 +25,18 @@ namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\Customer;
 
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
 use Magento\QuoteGraphQl\Model\Cart\QuoteAddressFactory;
 use Mageplaza\RewardPoints\Model\Api\SpendingManagement;
 use Magento\Checkout\Model\TotalsInformation;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
+use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
 /**
  * Class SpendingPoint
  * @package Mageplaza\RewardPointsGraphQl\Model\Resolver\Customer
  */
-class SpendingPoint implements ResolverInterface
+class SpendingPoint extends AbstractReward
 {
     /**
      * @var SpendingManagement
@@ -59,22 +60,24 @@ class SpendingPoint implements ResolverInterface
 
     /**
      * SpendingPoint constructor.
-     *
      * @param SpendingManagement $spendingManagement
      * @param GetCartForUser $getCartForUser
      * @param QuoteAddressFactory $quoteAddressFactory
      * @param TotalsInformation $totalInformation
+     * @param Data $helperData
      */
     public function __construct(
         SpendingManagement $spendingManagement,
         GetCartForUser $getCartForUser,
         QuoteAddressFactory $quoteAddressFactory,
-        TotalsInformation $totalInformation
+        TotalsInformation $totalInformation,
+        Data $helperData
     ) {
         $this->quoteAddressFactory = $quoteAddressFactory;
         $this->spendingManagement  = $spendingManagement;
         $this->getCartForUser      = $getCartForUser;
         $this->totalInformation    = $totalInformation;
+        parent::__construct($helperData);
     }
 
     /**
@@ -82,8 +85,14 @@ class SpendingPoint implements ResolverInterface
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        $store = $context->getExtensionAttributes()->getStore();
-        $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId(), (int) $store->getId());
+        parent::resolve($field, $context, $info, $value, $args);
+
+        if ($this->helperData->versionCompare('2.3.3')) {
+            $store = $context->getExtensionAttributes()->getStore();
+            $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId(), (int)$store->getId());
+        } else {
+            $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId());
+        }
 
         $addressInput    = $args['address_information']['address'];
         $shippingMethods = $args['address_information']['shipping_methods'];

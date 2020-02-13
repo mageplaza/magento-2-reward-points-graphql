@@ -25,8 +25,10 @@ namespace Mageplaza\RewardPointsGraphQl\Model\Resolver;
 
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
+use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 
 /**
  * Class AbstractReward
@@ -35,12 +37,32 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 abstract class AbstractReward implements ResolverInterface
 {
     /**
+     * @var Data
+     */
+    protected $helperData;
+
+    /**
+     * AbstractReward constructor.
+     * @param Data $helperData
+     */
+    public function __construct(Data $helperData)
+    {
+        $this-> helperData = $helperData;
+    }
+
+    /**
      * @inheritdoc
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        if ($context->getExtensionAttributes()->getIsCustomer() === false) {
-            throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
+        if (!$this->helperData->isEnabled()) {
+            throw new GraphQlNoSuchEntityException(__('Reward points is disabled.'));
+        }
+
+        if ($this->helperData->versionCompare('2.3.3')) {
+            if ($context->getExtensionAttributes()->getIsCustomer() === false) {
+                throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
+            }
         }
     }
 }
