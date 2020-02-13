@@ -48,7 +48,7 @@ type TotalSegmentsOutput {
 
 ## ======================================== Customer ===================================================================
 type Customer {
-    mp_reward:MpRewardCustomersOutput @doc(description: "Reward customer") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\Account")
+    mp_reward:MpRewardCustomersOutput @doc(description: "Reward customer") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Account")
 }
 
 ## ======================================== Products ===================================================================
