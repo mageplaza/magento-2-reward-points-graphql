@@ -45,7 +45,7 @@ class Invitation extends AbstractGetList
     /**
      * @var string
      */
-    protected $fieldName = 'mp_reward_transactions';
+    protected $fieldName = 'mp_reward_invitation';
 
     /**
      * @var GetCustomer
@@ -91,6 +91,6 @@ class Invitation extends AbstractGetList
          */
         $customer = $this->getCustomer->execute($context);
 
-        return $this->invitationRepository->getReferralByEmail($customer->getEmail());
+        return $this->invitationRepository->getReferralByEmail($searchCriteria, $customer->getEmail());
     }
 }
