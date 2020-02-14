@@ -32,5 +32,5 @@ use Mageplaza\RewardPointsGraphQl\Model\Resolver\FilterArgument;
  */
 class RewardTransaction extends FilterArgument
 {
-    protected $type = 'MpRewardTransactions';
+    protected $type = 'MpRewardTransactionsOutput';
 }
