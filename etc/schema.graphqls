@@ -11,7 +11,7 @@ type Query {
     ):MpRewardInvitationsOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\Invitation") @doc(description: "The query searches for reward invitations that match the criteria specified in the filter.")
     MpRewardRate(
         direction: Int = 1 @doc(description:"Rate type")
-    ):MpRewardRateOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\RewardRate") @doc(description: "The reward rate data")
+    ):MpRewardRateOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate") @doc(description: "The reward rate data")
     MpRewardShoppingCartSpendingRules(
         cart_id: String! @doc(description: "Cart Id")
     ):SpendingConfiguration @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Cart\\SpendingConfiguration") @doc(description: "The shopping cart spending rule apply for cart.")
