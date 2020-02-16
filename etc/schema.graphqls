@@ -1,14 +1,4 @@
 type Query {
-    MpRewardTransaction(
-        filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
-        pageSize: Int = 5 @doc(description: "How many items should show on the page?")
-        currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
-    ):MpRewardTransactionsListOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Transaction") @doc(description: "The query searches for reward customer.")
-    MpRewardInvitations(
-        filter: MpRewardInvitationsFilterInput @doc(description: "Identifies which reward invitations attributes to search for and return.")
-        pageSize: Int = 5 @doc(description: "How many items should show on the page?")
-        currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
-    ):MpRewardInvitationsOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\Invitation") @doc(description: "The query searches for reward invitations that match the criteria specified in the filter.")
     MpRewardRate(
         direction: Int = 1 @doc(description:"Rate type")
     ):MpRewardRateOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate") @doc(description: "The reward rate data")
@@ -32,6 +22,14 @@ type Mutation {
         emails: String! @doc(description: "Emails")
         message: String! @doc(description: "Message")
     ): Boolean @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\Invite") @doc(description: "Invite")
+    MpRewardSubscribe(
+        input: subscribeInput! @doc(description: "Subscribe data")
+    ): Boolean @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Subscribe") @doc(description: "Subscribe")
+}
+
+input subscribeInput {
+    isUpdate: Boolean! @doc(description: "Is update")
+    isExpire: Boolean! @doc(description: "Is expire")
 }
 
 ## ======================================== MpRewardSpendingPoint ======================================================
@@ -84,7 +82,26 @@ type MpRewardCustomersOutput {
     point_balance : Int @doc(description: "Point Balance")
     notification_update : String @doc(description: "Notification Update")
     notification_expire : String @doc(description: "Notification Expire")
+    balance_limitation : String @doc(description: "Balance limitation")
+    earn_point_expire: String @doc(description: "Earn point expire")
     refer_code : String @doc(description: "Refer Code")
+    current_exchange_rates: RewardExchangeRate @doc(description: "Current exchange rates") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate")
+    transactions(
+            filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
+            pageSize: Int = 5 @doc(description: "How many items should show on the page?")
+            currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
+        ):MpRewardTransactionsListOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Transaction") @doc(description: "The query searches for reward customer.")
+    invitations(
+            filter: MpRewardInvitationsFilterInput @doc(description: "Identifies which reward invitations attributes to search for and return.")
+            pageSize: Int = 5 @doc(description: "How many items should show on the page?")
+            currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
+        ):MpRewardInvitationsOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Invitation") @doc(description: "The query searches for reward invitations that match the criteria specified in the filter.")
+
+}
+
+type RewardExchangeRate {
+    earning_rate: String @doc(description: "Earning rate message")
+    spending_rate: String @doc(description: "Spending rate message")
 }
 
 ## ========================================= Reward transaction =======================================================

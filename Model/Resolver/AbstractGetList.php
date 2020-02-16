@@ -23,19 +23,19 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver;
 
+use Magento\Customer\Model\Customer;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
+use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
-use Mageplaza\RewardPointsUltimate\Helper\Data;
 
 /**
  * Class AbstractGetList
  * @package Mageplaza\RewardPointsGraphQl\Model\Resolver
  */
-abstract class AbstractGetList extends AbstractReward
+abstract class AbstractGetList implements ResolverInterface
 {
     /**
      * @var string
@@ -50,14 +50,11 @@ abstract class AbstractGetList extends AbstractReward
     /**
      * AbstractGetList constructor.
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param Data $helperData
      */
     public function __construct(
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        Data $helperData
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        parent::__construct($helperData);
     }
 
     /**
@@ -65,7 +62,9 @@ abstract class AbstractGetList extends AbstractReward
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        parent::resolve($field, $context, $info, $value, $args);
+        if (!isset($value['customer'])) {
+            return [];
+        }
 
         if (isset($args['currentPage']) && $args['currentPage'] < 1) {
             throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
@@ -77,7 +76,7 @@ abstract class AbstractGetList extends AbstractReward
         $searchCriteria = $this->searchCriteriaBuilder->build($this->fieldName, $args);
         $searchCriteria->setCurrentPage($args['currentPage']);
         $searchCriteria->setPageSize($args['pageSize']);
-        $searchResult = $this->getSearchResult($context, $searchCriteria);
+        $searchResult = $this->getSearchResult($value['customer'], $searchCriteria);
 
         return [
             'total_count' => $searchResult->getTotalCount(),
@@ -87,9 +86,9 @@ abstract class AbstractGetList extends AbstractReward
 
     /**
      * @param SearchCriteriaInterface $searchCriteria
-     * @param ContextInterface $context
+     * @param Customer $customer
      *
      * @return mixed
      */
-    abstract protected function getSearchResult($context, $searchCriteria);
+    abstract protected function getSearchResult($customer, $searchCriteria);
 }

@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\RewardCustomer;
 
-use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Mageplaza\RewardPointsUltimate\Helper\Data;
@@ -42,23 +41,15 @@ class Rate extends AbstractReward
     protected $rewardRateRepository;
 
     /**
-     * @var GetCustomer
-     */
-    protected $getCustomer;
-
-    /**
      * Rate constructor.
      * @param Data $helperData
      * @param RewardRateRepository $rewardRateRepository
-     * @param GetCustomer $getCustomer
      */
     public function __construct(
         Data $helperData,
-        RewardRateRepository $rewardRateRepository,
-        GetCustomer $getCustomer
+        RewardRateRepository $rewardRateRepository
     ) {
         $this->rewardRateRepository = $rewardRateRepository;
-        $this->getCustomer          = $getCustomer;
 
         parent::__construct($helperData);
     }
@@ -74,18 +65,36 @@ class Rate extends AbstractReward
         array $args = null
     ): array {
 
-        parent::resolve($field, $context, $info, $value, $args);
-
-        /** @var \Magento\GraphQl\Model\Query\ContextInterface $context
-         * \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context class is available < 2.3.3
-         */
-        $customer  = $this->getCustomer->execute($context);
-        $direction = $args['direction'];
-
-        return $this->rewardRateRepository->getRateByCustomer(
+        $customer = $value['customer'];
+        $data = [];
+        $earningRate = $this->rewardRateRepository->getRateByCustomer(
             $customer->getGroupId(),
             $customer->getWebsiteId(),
-            $direction
-        )->toArray();
+            2
+        );
+        $pointHelper = $this->helperData->getPointHelper();
+        if ($earningRate->getRateId()) {
+            $data['earning_rate'] = __(
+                'Each %1 spent for your order will earn %2.',
+                $this->helperData->convertPrice($earningRate->getMoney(), true, false),
+                $pointHelper->format($earningRate->getPoints())
+            );
+        }
+
+        $spendingRate = $this->rewardRateRepository->getRateByCustomer(
+            $customer->getGroupId(),
+            $customer->getWebsiteId(),
+            1
+        );
+
+        if ($spendingRate->getRateId()) {
+            $data['spending_rate'] = __(
+                'Each %1 can be redeemed for %2.',
+                $pointHelper->format($spendingRate->getPoints()),
+                $this->helperData->convertPrice($spendingRate->getMoney(), true, false)
+            );
+        }
+
+        return $data;
     }
 }

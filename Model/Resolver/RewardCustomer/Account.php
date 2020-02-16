@@ -28,11 +28,12 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Mageplaza\RewardPointsUltimate\Helper\Crypt;
+use Mageplaza\RewardPointsUltimate\Helper\Data;
 use Mageplaza\RewardPointsUltimate\Model\RewardCustomerFactory;
 
 /**
- * Class RewardCustomer
- * @package Mageplaza\RewardPointsGraphQl\Model\Resolver
+ * Class Account
+ * @package Mageplaza\RewardPointsGraphQl\Model\Resolver\RewardCustomer
  */
 class Account implements ResolverInterface
 {
@@ -47,13 +48,22 @@ class Account implements ResolverInterface
     protected $cryptHelper;
 
     /**
+     * @var Data
+     */
+    protected $helperData;
+
+    /**
      * Account constructor.
-     *
      * @param RewardCustomerFactory $rewardCustomerFactory
      * @param Crypt $cryptHelper
+     * @param Data $helperData
      */
-    public function __construct(RewardCustomerFactory $rewardCustomerFactory, Crypt $cryptHelper)
-    {
+    public function __construct(
+        RewardCustomerFactory $rewardCustomerFactory,
+        Crypt $cryptHelper,
+        Data $helperData
+    ) {
+        $this->helperData            = $helperData;
         $this->rewardCustomerFactory = $rewardCustomerFactory;
         $this->cryptHelper           = $cryptHelper;
     }
@@ -68,6 +78,11 @@ class Account implements ResolverInterface
         array $value = null,
         array $args = null
     ): array {
+
+        if (!$this->helperData->isEnabled()) {
+            return [];
+        }
+
         if (!isset($value['model'])) {
             throw new LocalizedException(__('"model" value should be specified'));
         }
@@ -79,6 +94,24 @@ class Account implements ResolverInterface
         $data['point_spent']  = $rewardCustomer->getPointSpent();
         $data['point_earned'] = $rewardCustomer->getPointEarned();
         $data['refer_code']   = $this->cryptHelper->encrypt($customer->getId());
+
+        $pointHelper = $this->helperData->getPointHelper();
+        if ($this->helperData->getMaxPointPerCustomer()) {
+            $maxPoints                  = $pointHelper->format(
+                $this->helperData->getMaxPointPerCustomer()
+            );
+            $data['balance_limitation'] = __('Balance is limited at %1', $maxPoints);
+        }
+        $expire = $this->helperData->getSalesPointExpiredAfter();
+        if ($expire) {
+            $data['earn_point_expire'] = __(
+                'Each earned %1(s) record expires in %2 day(s)',
+                $pointHelper->getPointLabel(),
+                $expire
+            );
+        }
+
+        $data['customer']     = $customer;
 
         return $data;
     }
