@@ -1,7 +1,4 @@
 type Query {
-    MpRewardRate(
-        direction: Int = 1 @doc(description:"Rate type")
-    ):MpRewardRateOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate") @doc(description: "The reward rate data")
     MpRewardShoppingCartSpendingRules(
         cart_id: String! @doc(description: "Cart Id")
     ):SpendingConfiguration @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Cart\\SpendingConfiguration") @doc(description: "The shopping cart spending rule apply for cart.")
@@ -96,7 +93,6 @@ type MpRewardCustomersOutput {
             pageSize: Int = 5 @doc(description: "How many items should show on the page?")
             currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
         ):MpRewardInvitationsOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Invitation") @doc(description: "The query searches for reward invitations that match the criteria specified in the filter.")
-
 }
 
 type RewardExchangeRate {

@@ -27,9 +27,9 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
-use Mageplaza\RewardPointsUltimate\Helper\Calculation as HelperCalculation;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 use Mageplaza\RewardPointsUltimate\Helper\Data;
+use Mageplaza\RewardPointsUltimate\Model\CartRepository;
 
 /**
  * Class SpendingConfiguration
@@ -43,23 +43,24 @@ class SpendingConfiguration extends AbstractReward
     private $getCartForUser;
 
     /**
-     * @var HelperCalculation
+     * @var CartRepository
      */
-    protected $helperCalculation;
+    protected $cartRepository;
 
     /**
      * SpendingConfiguration constructor.
+     *
      * @param Data $helperData
      * @param GetCartForUser $getCartForUser
-     * @param HelperCalculation $helperCalculation
+     * @param CartRepository $cartRepository
      */
     public function __construct(
         Data $helperData,
         GetCartForUser $getCartForUser,
-        HelperCalculation $helperCalculation
+        CartRepository $cartRepository
     ) {
         $this->getCartForUser = $getCartForUser;
-        $this->helperCalculation = $helperCalculation;
+        $this->cartRepository = $cartRepository;
         parent::__construct($helperData);
     }
 
@@ -81,8 +82,6 @@ class SpendingConfiguration extends AbstractReward
             $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId());
         }
 
-        $this->helperCalculation->setQuote($quote);
-
-        return $this->helperCalculation->getSpendingConfiguration($quote);
+        return $this->cartRepository->getSpendingRules($quote);
     }
 }
