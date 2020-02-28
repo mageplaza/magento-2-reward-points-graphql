@@ -1,16 +1,16 @@
 type Query {
     MpRewardShoppingCartSpendingRules(
-        cart_id: String! @doc(description: "Cart Id")
-    ):SpendingConfiguration @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Cart\\SpendingConfiguration") @doc(description: "The shopping cart spending rule apply for cart.")
+        cart_id: String! @doc(description: "Cart id")
+    ):SpendingConfiguration @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Cart\\SpendingConfiguration") @doc(description: "The spending rule applied for shopping cart ")
 }
 
 type Mutation {
     MpRewardSpendingPoint (
-       cart_id: String! @doc(description: "Cart Id")
+       cart_id: String! @doc(description: "Cart id")
        points: Int! @doc(description: "Points")
        rule_id: String! @doc(description :"Rule id")
-       address_information: AddressInformationInput! @doc(description: "Address data")
-    ): [TotalSegmentsOutput] @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\SpendingPoint") @doc(description: "Spending")
+       address_information: AddressInformationInput! @doc(description: "Address information")
+    ): [TotalSegmentsOutput] @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\SpendingPoint") @doc(description: "Total segments output")
     MpRewardRefer (
         refer_code: String! @doc(description: "Refer code")
     ): Boolean @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Customer\\Refer") @doc(description: "Refer")
@@ -63,36 +63,36 @@ type MpRewardRateOutput {
     points: Int @doc(description: "Points")
     money: Float @doc(description: "Money")
     priority: Int @doc(description: "Priority")
-    customer_group_ids: String @doc(description: "Customer Group Ids")
-    website_ids: String @doc(description: "Website Ids")
+    customer_group_ids: String @doc(description: "Customer group ids")
+    website_ids: String @doc(description: "Website ids")
 }
 
 
 ## ======================================== Reward customers ===========================================================
 
 type MpRewardCustomersOutput {
-    reward_id: Int @doc(description: "Reward Id")
-    point_balance : Int @doc(description: "Point Balance")
-    customer_id : Int @doc(description: "Customer Id")
-    point_spent : Int @doc(description: "Point Spent")
-    point_earned : Int @doc(description: "Point Earned")
-    point_balance : Int @doc(description: "Point Balance")
-    notification_update : String @doc(description: "Notification Update")
-    notification_expire : String @doc(description: "Notification Expire")
+    reward_id: Int @doc(description: "Reward id")
+    point_balance : Int @doc(description: "Point balance")
+    customer_id : Int @doc(description: "Customer id")
+    point_spent : Int @doc(description: "Point spent")
+    point_earned : Int @doc(description: "Point earned")
+    point_balance : Int @doc(description: "Point balance")
+    notification_update : String @doc(description: "Notification of update")
+    notification_expire : String @doc(description: "Notification of expire")
     balance_limitation : String @doc(description: "Balance limitation")
     earn_point_expire: String @doc(description: "Earn point expire")
     refer_code : String @doc(description: "Refer Code")
     current_exchange_rates: RewardExchangeRate @doc(description: "Current exchange rates") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate")
     transactions(
             filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
-            pageSize: Int = 5 @doc(description: "How many items should show on the page?")
-            currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
+            pageSize: Int = 5 @doc(description: "How many items should be shown on the page?")
+            currentPage: Int = 1 @doc(description: "Allow page number to start from page 1")
         ):MpRewardTransactionsListOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Transaction") @doc(description: "The query searches for reward customer.")
     invitations(
             filter: MpRewardInvitationsFilterInput @doc(description: "Identifies which reward invitations attributes to search for and return.")
-            pageSize: Int = 5 @doc(description: "How many items should show on the page?")
-            currentPage: Int = 1 @doc(description: "Allow page number to start with 1")
-        ):MpRewardInvitationsOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Invitation") @doc(description: "The query searches for reward invitations that match the criteria specified in the filter.")
+            pageSize: Int = 5 @doc(description: "How many items should be shown on the page?")
+            currentPage: Int = 1 @doc(description: "Allow page number to start from page 1")
+        ):MpRewardInvitationsOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Invitation") @doc(description: "The query searches for reward invitations that match the filtered criteria..")
 }
 
 type RewardExchangeRate {
@@ -103,20 +103,20 @@ type RewardExchangeRate {
 ## ========================================= Reward transaction =======================================================
 
 input MpRewardTransactionsFilterInput {
-    transaction_id: FilterTypeInput @doc(description: "Transaction Id")
-    reward_id : FilterTypeInput @doc(description: "Reward Id")
-    customer_id : FilterTypeInput @doc(description: "Customer Id")
-    action_code : FilterTypeInput @doc(description: "Action Code")
+    transaction_id: FilterTypeInput @doc(description: "Transaction id")
+    reward_id : FilterTypeInput @doc(description: "Reward id")
+    customer_id : FilterTypeInput @doc(description: "Customer id")
+    action_code : FilterTypeInput @doc(description: "Action code")
     action_type : FilterTypeInput @doc(description: "Action type")
-    store_id : FilterTypeInput @doc(description: "Store Id")
-    point_amount : FilterTypeInput @doc(description: "Point Amount")
-    point_remaining : FilterTypeInput @doc(description: "point Remaining")
-    point_used : FilterTypeInput @doc(description: "Point Used")
+    store_id : FilterTypeInput @doc(description: "Store id")
+    point_amount : FilterTypeInput @doc(description: "Point amount")
+    point_remaining : FilterTypeInput @doc(description: "Point remaining")
+    point_used : FilterTypeInput @doc(description: "Point used")
     status : FilterTypeInput @doc(description: "Status")
-    order_id : FilterTypeInput @doc(description: "Order Id")
-    created_at : FilterTypeInput @doc(description: "Created At")
-    expiration_date : FilterTypeInput @doc(description: "Expiration Date")
-    expire_email_sent : FilterTypeInput @doc(description: "Expire Email Sent")
+    order_id : FilterTypeInput @doc(description: "Order id")
+    created_at : FilterTypeInput @doc(description: "Created at")
+    expiration_date : FilterTypeInput @doc(description: "Expiration date")
+    expire_email_sent : FilterTypeInput @doc(description: "Expire email sent")
 }
 
 type MpRewardTransactionsListOutput {
@@ -125,33 +125,33 @@ type MpRewardTransactionsListOutput {
 }
 
 type MpRewardTransactionsOutput {
-    transaction_id: Int @doc(description: "Transaction Id")
-    reward_id : Int @doc(description: "Reward Id")
-    customer_id : Int @doc(description: "Customer Id")
-    action_code : String @doc(description: "Action Code")
+    transaction_id: Int @doc(description: "Transaction id")
+    reward_id : Int @doc(description: "Reward id")
+    customer_id : Int @doc(description: "Customer id")
+    action_code : String @doc(description: "Action code")
     action_type : String @doc(description: "Action type")
-    store_id : Int @doc(description: "Store Id")
-    point_amount : Int @doc(description: "Point Amount")
-    point_remaining : Int @doc(description: "point Remaining")
-    point_used : Int @doc(description: "Point Used")
+    store_id : Int @doc(description: "Store id")
+    point_amount : Int @doc(description: "Point amount")
+    point_remaining : Int @doc(description: "point remaining")
+    point_used : Int @doc(description: "Point used")
     status : Int @doc(description: "Status")
-    order_id : Int @doc(description: "Order Id")
-    created_at : String @doc(description: "Created At")
-    expiration_date : String @doc(description: "Expiration Date")
-    expire_email_sent : String @doc(description: "Expire Email Sent")
+    order_id : Int @doc(description: "Order id")
+    created_at : String @doc(description: "Created at")
+    expiration_date : String @doc(description: "Expiration date")
+    expire_email_sent : String @doc(description: "Expire email sent")
     comment : String @doc(description: "Comment")
 }
 
 ## ========================================= Reward Invitation =======================================================
 input MpRewardInvitationsFilterInput {
-    invitation_id: FilterTypeInput @doc(description: "Invitation Id")
-    referral_email: FilterTypeInput @doc(description: "Referral Email")
-    invited_email: FilterTypeInput @doc(description: "Invited Email")
-    referral_earn: FilterTypeInput @doc(description: "Referral Earn")
-    invited_earn: FilterTypeInput @doc(description: "Invited Earn")
-    invited_discount: FilterTypeInput @doc(description: "Invited Discount")
-    store_id: FilterTypeInput @doc(description: "Store Id")
-    created_at: FilterTypeInput @doc(description: "Created At")
+    invitation_id: FilterTypeInput @doc(description: "Invitation id")
+    referral_email: FilterTypeInput @doc(description: "Referral email")
+    invited_email: FilterTypeInput @doc(description: "Invited email")
+    referral_earn: FilterTypeInput @doc(description: "Referral earn")
+    invited_earn: FilterTypeInput @doc(description: "Invited earn")
+    invited_discount: FilterTypeInput @doc(description: "Invited discount")
+    store_id: FilterTypeInput @doc(description: "Store id")
+    created_at: FilterTypeInput @doc(description: "Created at")
 }
 type MpRewardInvitationsOutput {
     total_count: Int @doc(description: "The total number of results returned when a query is applied"),
@@ -159,14 +159,14 @@ type MpRewardInvitationsOutput {
 }
 
 type MpRewardInvitations {
-  invitation_id: Int @doc(description: "Invitation Id")
-  referral_email: String @doc(description: "Referral Email")
-  invited_email: String @doc(description: "Invited Email")
-  referral_earn: Int @doc(description: "Referral Earn")
-  invited_earn: Int @doc(description: "Invited Earn")
-  invited_discount: Float @doc(description: "Invited Discount")
-  store_id: String @doc(description: "Store Id")
-  created_at: String @doc(description: "Created At")
+  invitation_id: Int @doc(description: "Invitation id")
+  referral_email: String @doc(description: "Referral email")
+  invited_email: String @doc(description: "Invited email")
+  referral_earn: Int @doc(description: "Referral earn")
+  invited_earn: Int @doc(description: "Invited earn")
+  invited_discount: Float @doc(description: "Invited discount")
+  store_id: String @doc(description: "Store id")
+  created_at: String @doc(description: "Created at")
 }
 
 ## ========================================= Spending Rules =======================================================
