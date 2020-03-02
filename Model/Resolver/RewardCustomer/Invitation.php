@@ -62,7 +62,9 @@ class Invitation extends AbstractGetList
     /**
      * @param Customer $customer
      * @param SearchCriteriaInterface $searchCriteria
+     *
      * @return InvitationSearchResultInterface|mixed
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getSearchResult($customer, $searchCriteria)
     {

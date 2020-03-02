@@ -122,6 +122,7 @@ input MpRewardTransactionsFilterInput {
 type MpRewardTransactionsListOutput {
     total_count: Int @doc(description: "The total number of results returned when a query is applied"),
     items: [MpRewardTransactionsOutput] @doc(description: "Reward transaction data is satisfied")
+    page_info: PageInfo @doc(description: "An object that includes the pageSize and currentPage values specified in the query.")
 }
 
 type MpRewardTransactionsOutput {
@@ -156,6 +157,7 @@ input MpRewardInvitationsFilterInput {
 type MpRewardInvitationsOutput {
     total_count: Int @doc(description: "The total number of results returned when a query is applied"),
     items: [MpRewardInvitations] @doc(description: "Reward invitation data is satisfied")
+     page_info: PageInfo @doc(description: "An object that includes the pageSize and currentPage values specified in the query.")
 }
 
 type MpRewardInvitations {
@@ -167,6 +169,15 @@ type MpRewardInvitations {
   invited_discount: Float @doc(description: "Invited discount")
   store_id: String @doc(description: "Store id")
   created_at: String @doc(description: "Created at")
+}
+
+type PageInfo {
+    pageSize: Int @doc(description: "How many items should show on the page.")
+    currentPage: Int @doc(description: "Specifies which page of results to return.")
+    hasNextPage: Boolean @doc(description: "Has next page.")
+    hasPreviousPage: Boolean @doc(description: "Has previous page.")
+    startPage: Int @doc(description: "Start page.")
+    endPage: Int @doc(description: "End page.")
 }
 
 ## ========================================= Spending Rules =======================================================
