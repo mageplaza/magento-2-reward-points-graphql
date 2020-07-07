@@ -2,6 +2,7 @@ type Query {
     MpRewardShoppingCartSpendingRules(
         cart_id: String! @doc(description: "Cart id")
     ):SpendingConfiguration @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Cart\\SpendingConfiguration") @doc(description: "The spending rule applied for shopping cart ")
+    MpRewardIcon:Icon @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Configs\\GetIconUrl") @doc(description: "Get icon url")
 }
 
 type Mutation {
@@ -193,4 +194,10 @@ type SpendingRules {
   min: Int @doc(description:"Min")
   max: Int @doc(description:"Max")
   step: Int @doc(description:"Step spending point")
+}
+
+## =========================================  Icon =======================================================
+
+type Icon {
+  url: String @doc(description: "icon url")
 }
