@@ -76,8 +76,8 @@ class Subscribe extends AbstractReward
          * \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context class is available < 2.3.3
          */
         $customer = $this->getCustomer->execute($context);
-        $isUpdate = isset($args['input']['isUpdate']) ?: false;
-        $isExpire = isset($args['input']['isExpire']) ?: false;
+        $isUpdate = isset($args['input']['isUpdate']) ? $args['input']['isUpdate'] : false;
+        $isExpire = isset($args['input']['isExpire']) ? $args['input']['isExpire'] : false;
 
         return $this->rewardCustomerRepository->subscribe(
             $customer->getId(),
