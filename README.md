@@ -1,4 +1,4 @@
-# Reward Points GraphQL
+# Magento 2 Reward Points GraphQL / PWA
 
 Mageplaza Reward Points Extension supports getting and pushing data on the website with GraphQl.
 
