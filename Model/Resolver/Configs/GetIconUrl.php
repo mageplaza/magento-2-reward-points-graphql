@@ -23,14 +23,10 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\Configs;
 
-use Magento\Framework\App\Area;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Framework\View\Asset\Repository as AssetRepository;
-use Mageplaza\Core\Helper\Media;
 use Mageplaza\RewardPoints\Helper\Data;
 
 /**
@@ -45,38 +41,14 @@ class GetIconUrl implements ResolverInterface
     protected $helperData;
 
     /**
-     * @var AssetRepository
-     */
-    protected $assetRepo;
-
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var Media
-     */
-    protected $mediaHelper;
-
-    /**
      * GetIconUrl constructor.
      *
      * @param Data $helperData
-     * @param AssetRepository $assetRepo
-     * @param RequestInterface $request
-     * @param Media $media
      */
     public function __construct(
-        Data $helperData,
-        AssetRepository $assetRepo,
-        RequestInterface $request,
-        Media $media
-    ){
+        Data $helperData
+    ) {
         $this->helperData  = $helperData;
-        $this->assetRepo   = $assetRepo;
-        $this->request     = $request;
-        $this->mediaHelper = $media;
     }
 
     /**
@@ -95,18 +67,8 @@ class GetIconUrl implements ResolverInterface
             return '';
         }
 
-        $icon = $this->helperData->getConfigGeneral('icon', $storeId);
-        if ($icon && $this->mediaHelper->getMediaDirectory()->isExist('mageplaza/rewardpoints/' . $icon)) {
-            $iconUrl = $this->mediaHelper->getMediaUrl('mageplaza/rewardpoints/' . $icon);
-        } else {
-            $iconUrl = $this->assetRepo->getUrlWithParams(
-                'Mageplaza_RewardPoints::images/default/point.png',
-                ['_secure' => $this->request->isSecure(), 'area' => Area::AREA_FRONTEND]
-            );
-        }
-
         return [
-            'url' => $iconUrl
+            'url' => $this->helperData->getPointHelper()->getIconUrl($storeId)
         ];
     }
 }

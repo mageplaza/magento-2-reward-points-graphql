@@ -27,8 +27,8 @@ use Magento\Customer\Model\Customer;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Mageplaza\RewardPointsUltimate\Helper\Data;
-use Mageplaza\RewardPointsUltimate\Model\RewardCustomerRepository;
+use Mageplaza\RewardPoints\Helper\Data;
+use Mageplaza\RewardPoints\Model\RewardCustomerRepository;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
 /**
@@ -59,7 +59,7 @@ class Subscribe extends AbstractReward
         Data $helperData
     ) {
         $this->rewardCustomerRepository = $rewardCustomerRepository;
-        $this->getCustomer          = $getCustomer;
+        $this->getCustomer              = $getCustomer;
 
         parent::__construct($helperData);
     }

@@ -25,8 +25,8 @@ namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\RewardCustomer;
 
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Config\Element\Field;
-use Mageplaza\RewardPointsUltimate\Helper\Data;
-use Mageplaza\RewardPointsUltimate\Model\RewardRateRepository;
+use Mageplaza\RewardPoints\Helper\Data;
+use Mageplaza\RewardPoints\Model\RewardRateRepository;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
 /**
@@ -64,6 +64,10 @@ class Rate extends AbstractReward
         array $value = null,
         array $args = null
     ): array {
+
+        if (!$this->helperData->isEnabled()) {
+            return [];
+        }
 
         $customer = $value['customer'];
         $data = [];

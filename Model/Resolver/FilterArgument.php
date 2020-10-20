@@ -63,9 +63,10 @@ abstract class FilterArgument implements FieldEntityAttributesInterface
 
         /** @var Field $field */
         foreach ($this->config->getConfigElement($this->type)->getFields() as $field) {
-            $fields[$field->getName()] = '';
+            $fieldName          = $field->getName();
+            $fields[$fieldName] = $fieldName;
         }
 
-        return array_keys($fields);
+        return $fields;
     }
 }

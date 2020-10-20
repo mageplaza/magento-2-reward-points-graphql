@@ -23,13 +23,14 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\Cart;
 
+use Magento\Framework\DataObject;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\QuoteGraphQl\Model\Cart\GetCartForUser;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
-use Mageplaza\RewardPointsUltimate\Helper\Data;
-use Mageplaza\RewardPointsUltimate\Model\CartRepository;
+use Mageplaza\RewardPoints\Helper\Data;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 
 /**
  * Class SpendingConfiguration
@@ -43,24 +44,24 @@ class SpendingConfiguration extends AbstractReward
     private $getCartForUser;
 
     /**
-     * @var CartRepository
+     * @var EventManager
      */
-    protected $cartRepository;
+    private $eventManager;
 
     /**
      * SpendingConfiguration constructor.
      *
      * @param Data $helperData
      * @param GetCartForUser $getCartForUser
-     * @param CartRepository $cartRepository
+     * @param EventManager $eventManager
      */
     public function __construct(
         Data $helperData,
         GetCartForUser $getCartForUser,
-        CartRepository $cartRepository
+        EventManager $eventManager
     ) {
         $this->getCartForUser = $getCartForUser;
-        $this->cartRepository = $cartRepository;
+        $this->eventManager = $eventManager;
         parent::__construct($helperData);
     }
 
@@ -69,6 +70,11 @@ class SpendingConfiguration extends AbstractReward
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
+
+        if (!$this->helperData->isModuleOutputEnabled('Mageplaza_RewardPointsPro')) {
+            throw new GraphQlInputException(__('Reward Points Pro extension is required.'));
+        }
+
         parent::resolve($field, $context, $info, $value, $args);
 
         if (empty($args['cart_id'])) {
@@ -81,7 +87,13 @@ class SpendingConfiguration extends AbstractReward
         } else {
             $quote = $this->getCartForUser->execute($args['cart_id'], $context->getUserId());
         }
+        $spendingRuleObject = new DataObject(['rules' => []]);
+        $this->eventManager->dispatch('mp_reward_graphql_get_spending_rules', [
+                'object' => $spendingRuleObject,
+                'quote'  => $quote
+            ]
+        );
 
-        return $this->cartRepository->getSpendingRules($quote);
+        return $spendingRuleObject->getRules();
     }
 }
