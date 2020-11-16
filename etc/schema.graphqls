@@ -82,6 +82,16 @@ type MpRewardRateOutput {
     website_ids: String @doc(description: "Website ids")
 }
 
+## ======================================== Products ===================================================================
+interface ProductInterface {
+    mp_reward: RewardEarning @doc(description: "Reward earning") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Product\\Earning")
+}
+
+type RewardEarning @doc(description: "The object contains reward data details") {
+    earning_point: Int @doc(description: "Earning point")
+    earning_point_format: String @doc(description: "Earning point format")
+}
+
 ## ======================================== Reward customers ===========================================================
 
 type MpRewardCustomersOutput {
