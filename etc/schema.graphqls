@@ -89,7 +89,9 @@ interface ProductInterface {
 
 type RewardEarning @doc(description: "The object contains reward data details") {
     earning_point: Int @doc(description: "Earning point")
-    earning_point_format: String @doc(description: "Earning point format")
+    earning_point_format: String @doc(description: "Earning point format"),
+    reward_icon: Icon @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Configs\\GetIconUrl") @doc(description: "Get icon url")
+
 }
 
 ## ======================================== Reward customers ===========================================================
