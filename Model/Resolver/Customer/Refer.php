@@ -23,10 +23,14 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\Customer;
 
+use Exception;
+use Magento\Framework\DataObject;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\GraphQl\Config\Element\Field;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
-use Mageplaza\RewardPointsUltimate\Model\InvitationRepository;
+use Mageplaza\RewardPoints\Helper\Data;
 
 /**
  * Class Refer
@@ -35,18 +39,27 @@ use Mageplaza\RewardPointsUltimate\Model\InvitationRepository;
 class Refer implements ResolverInterface
 {
     /**
-     * @var InvitationRepository
+     * @var EventManager
      */
-    protected $invitationRepository;
+    private $eventManager;
+
+    /**
+     * @var Data
+     */
+    protected $helperData;
 
     /**
      * Refer constructor.
-     * @param InvitationRepository $invitationRepository
+     *
+     * @param EventManager $eventManager
+     * @param Data $helperData
      */
     public function __construct(
-        InvitationRepository $invitationRepository
+        EventManager $eventManager,
+        Data $helperData
     ) {
-        $this->invitationRepository = $invitationRepository;
+        $this->eventManager = $eventManager;
+        $this->helperData   = $helperData;
     }
 
     /**
@@ -54,6 +67,22 @@ class Refer implements ResolverInterface
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        return $this->invitationRepository->referByCode($args['refer_code']);
+        if (!$this->helperData->isModuleOutputEnabled('Mageplaza_RewardPointsUltimate')) {
+            throw new GraphQlInputException(__('Reward Points Ultimate extension is required.'));
+        }
+
+        $referObject = new DataObject(['status' => false]);
+
+        try {
+            $this->eventManager->dispatch('mp_reward_graphql_refer', [
+                    'refer_code' => $args['refer_code'],
+                    'object'     => $referObject
+                ]
+            );
+        } catch (Exception $exception) {
+            throw new GraphQlInputException(__($exception->getMessage()));
+        }
+
+        return $referObject->getStatus();
     }
 }

@@ -21,20 +21,20 @@
 
 declare(strict_types=1);
 
-namespace Mageplaza\RewardPointsGraphQl\Model\Resolver;
+namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\Configs;
 
 use Magento\Framework\GraphQl\Config\Element\Field;
-use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
-use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Mageplaza\RewardPoints\Helper\Data;
+use Mageplaza\RewardPoints\Model\ConfigRepository;
 
 /**
- * Class AbstractReward
- * @package Mageplaza\RewardPointsGraphQl\Model\Resolver
+ * Class Get
+ * @package Mageplaza\RewardPointsGraphQl\Model\Resolver\Configs
  */
-abstract class AbstractReward implements ResolverInterface
+class Get implements ResolverInterface
 {
     /**
      * @var Data
@@ -42,13 +42,22 @@ abstract class AbstractReward implements ResolverInterface
     protected $helperData;
 
     /**
-     * AbstractReward constructor.
+     * @var ConfigRepository
+     */
+    protected $configRepository;
+
+    /**
+     * Get constructor.
      *
      * @param Data $helperData
+     * @param ConfigRepository $configRepository
      */
-    public function __construct(Data $helperData)
-    {
-        $this-> helperData = $helperData;
+    public function __construct(
+        Data $helperData,
+        ConfigRepository $configRepository
+    ) {
+        $this->helperData       = $helperData;
+        $this->configRepository = $configRepository;
     }
 
     /**
@@ -57,13 +66,14 @@ abstract class AbstractReward implements ResolverInterface
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
         if (!$this->helperData->isEnabled()) {
-            throw new GraphQlNoSuchEntityException(__('Reward points is disabled.'));
+            throw new GraphQlInputException(__('Reward points is disabled.'));
         }
 
-        if ($this->helperData->versionCompare('2.3.3')) {
-            if ($context->getExtensionAttributes()->getIsCustomer() === false) {
-                throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
-            }
-        }
+        $store   = $context->getExtensionAttributes()->getStore();
+        $storeId = $store->getId();
+        $storeConfigs = $this->configRepository->getStoreConfigs($storeId);
+        $storeConfigs['earning']['earn_from_tax'] = $storeConfigs['earning']['earn_from'];
+
+        return $storeConfigs;
     }
 }

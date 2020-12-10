@@ -27,8 +27,8 @@ use Magento\Customer\Model\Customer;
 use Magento\Framework\Api\Search\SearchCriteriaInterface;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder as SearchCriteriaBuilder;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractGetList;
-use Mageplaza\RewardPointsUltimate\Api\Data\TransactionSearchResultInterface;
-use Mageplaza\RewardPointsUltimate\Model\TransactionRepository;
+use Mageplaza\RewardPoints\Api\Data\TransactionSearchResultInterface;
+use Mageplaza\RewardPoints\Model\TransactionRepository;
 
 /**
  * Class Transaction

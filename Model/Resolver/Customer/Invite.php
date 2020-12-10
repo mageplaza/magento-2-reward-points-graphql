@@ -23,12 +23,15 @@ declare(strict_types=1);
 
 namespace Mageplaza\RewardPointsGraphQl\Model\Resolver\Customer;
 
+use Exception;
 use Magento\Customer\Model\Customer;
 use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
+use Magento\Framework\DataObject;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\GraphQl\Config\Element\Field;
+use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Mageplaza\RewardPointsUltimate\Helper\Data;
-use Mageplaza\RewardPointsUltimate\Model\InvitationRepository;
+use Mageplaza\RewardPoints\Helper\Data;
 use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
 
 /**
@@ -37,10 +40,6 @@ use Mageplaza\RewardPointsGraphQl\Model\Resolver\AbstractReward;
  */
 class Invite extends AbstractReward
 {
-    /**
-     * @var InvitationRepository
-     */
-    protected $invitationRepository;
 
     /**
      * @var GetCustomer
@@ -48,18 +47,24 @@ class Invite extends AbstractReward
     protected $getCustomer;
 
     /**
+     * @var EventManager
+     */
+    protected $eventManager;
+
+    /**
      * Invite constructor.
-     * @param InvitationRepository $invitationRepository
+     *
      * @param GetCustomer $getCustomer
      * @param Data $helperData
+     * @param EventManager $eventManager
      */
     public function __construct(
-        InvitationRepository $invitationRepository,
         GetCustomer $getCustomer,
-        Data $helperData
+        Data $helperData,
+        EventManager $eventManager
     ) {
-        $this->invitationRepository = $invitationRepository;
         $this->getCustomer          = $getCustomer;
+        $this->eventManager = $eventManager;
 
         parent::__construct($helperData);
     }
@@ -69,6 +74,10 @@ class Invite extends AbstractReward
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
+        if (!$this->helperData->isModuleOutputEnabled('Mageplaza_RewardPointsUltimate')) {
+            throw new GraphQlInputException(__('Reward Points Ultimate extension is required.'));
+        }
+
         parent::resolve($field, $context, $info, $value, $args);
 
         /** @var Customer $customer */
@@ -77,11 +86,19 @@ class Invite extends AbstractReward
          */
         $customer = $this->getCustomer->execute($context);
 
-        return $this->invitationRepository->sendInvitation(
-            $customer,
-            $args['send_from'],
-            $args['emails'],
-            $args['message']
-        );
+        $inviteObject = new DataObject(['status' => false]);
+
+        try {
+            $this->eventManager->dispatch('mp_reward_graphql_invite', [
+                    'customer' => $customer,
+                    'object'   => $inviteObject,
+                    'params'   => $args
+                ]
+            );
+        } catch (Exception $exception) {
+            throw new GraphQlInputException(__($exception->getMessage()));
+        }
+
+        return $inviteObject->getStatus();
     }
 }

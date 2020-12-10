@@ -27,9 +27,8 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
-use Mageplaza\RewardPointsUltimate\Helper\Crypt;
-use Mageplaza\RewardPointsUltimate\Helper\Data;
-use Mageplaza\RewardPointsUltimate\Model\RewardCustomerFactory;
+use Mageplaza\RewardPoints\Helper\Data;
+use Mageplaza\RewardPoints\Model\AccountFactory as RewardCustomerFactory;
 
 /**
  * Class Account
@@ -43,11 +42,6 @@ class Account implements ResolverInterface
     protected $rewardCustomerFactory;
 
     /**
-     * @var Crypt
-     */
-    protected $cryptHelper;
-
-    /**
      * @var Data
      */
     protected $helperData;
@@ -55,17 +49,14 @@ class Account implements ResolverInterface
     /**
      * Account constructor.
      * @param RewardCustomerFactory $rewardCustomerFactory
-     * @param Crypt $cryptHelper
      * @param Data $helperData
      */
     public function __construct(
         RewardCustomerFactory $rewardCustomerFactory,
-        Crypt $cryptHelper,
         Data $helperData
     ) {
         $this->helperData            = $helperData;
         $this->rewardCustomerFactory = $rewardCustomerFactory;
-        $this->cryptHelper           = $cryptHelper;
     }
 
     /**
@@ -93,7 +84,6 @@ class Account implements ResolverInterface
         $data                 = $rewardCustomer->toArray();
         $data['point_spent']  = $rewardCustomer->getPointSpent();
         $data['point_earned'] = $rewardCustomer->getPointEarned();
-        $data['refer_code']   = $this->cryptHelper->encrypt($customer->getId());
 
         $pointHelper = $this->helperData->getPointHelper();
         if ($this->helperData->getMaxPointPerCustomer()) {
