@@ -1,5 +1,7 @@
 # Magento 2 Reward Points GraphQL / PWA
 
+**Magento 2 Reward Points GraphQL is now a part of Mageplaza Reward Points extension that adds GraphQL features.** This supports PWA compatibility. With this extension, you can get and push data on the website with GraphQL.
+
 [Mageplaza Reward Points for Magento 2](https://www.mageplaza.com/magento-2-reward-points-extension/) is a powerful loyalty program that converts buyers into customers, increases conversion rates, and boosts sales with a smart automatic reward system. 
 
 The reward point labels can be customized easily from the admin backend. You can use eye-catching point labels such as coin, flower, heart, etc., to attract customers to your reward programs. This will arouse their interest in your program and shopping in your store. Spending sliders will be another factor to increase customer experience and joyfulness when shopping in your store. Instead of filling in the number of points spent, they can pull the slider, and the corresponding point will be subtracted. 
@@ -9,8 +11,6 @@ It’s flexible for online store owners to set up rewards levels based on earnin
 Magento Reward Points enables you to offer customers a transparent and reasonable point spending system that allows them to purchase products on your store by points. It makes the shopping process funnier, and customers can see the real advantages of reward points they’ve earned. 
 
 Customers' earning and spending points can be tracked easily via an advanced report supported by the Mageplaza Report extension. The store admin will know if any customer is missing out on their points to immediately give them incentive offers or reward points to earn their interest back. Importing and exporting the reward points transaction are also done quickly, saving a lot of time for the store admin. 
-
-Another noticeable feature is that **Magento 2 Reward Points GraphQL is now a part of Mageplaza Reward Points extension that adds GraphQL features.** This supports PWA compatibility. With this extension, you can get and push data on the website with GraphQl.
 
 ## 1. How to install
 
