@@ -107,6 +107,7 @@ type MpRewardCustomersOutput {
     notification_expire : String @doc(description: "Notification of expire")
     balance_limitation : String @doc(description: "Balance limitation")
     earn_point_expire: String @doc(description: "Earn point expire")
+    refer_code: String @doc(description: "Refer code")
     current_exchange_rates: RewardExchangeRate @doc(description: "Current exchange rates") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate")
     transactions(
             filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")

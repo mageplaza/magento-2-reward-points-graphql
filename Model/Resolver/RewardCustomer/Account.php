@@ -29,6 +29,7 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Mageplaza\RewardPoints\Helper\Data;
 use Mageplaza\RewardPoints\Model\AccountFactory as RewardCustomerFactory;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 /**
  * Class Account
@@ -47,16 +48,25 @@ class Account implements ResolverInterface
     protected $helperData;
 
     /**
+     * @var EncryptorInterface
+     */
+    protected $encryptor;
+
+    /**
      * Account constructor.
+     *
      * @param RewardCustomerFactory $rewardCustomerFactory
      * @param Data $helperData
+     * @param EncryptorInterface $encryptor
      */
     public function __construct(
         RewardCustomerFactory $rewardCustomerFactory,
-        Data $helperData
+        Data $helperData,
+        EncryptorInterface $encryptor
     ) {
         $this->helperData            = $helperData;
         $this->rewardCustomerFactory = $rewardCustomerFactory;
+        $this->encryptor             = $encryptor;
     }
 
     /**
@@ -84,6 +94,7 @@ class Account implements ResolverInterface
         $data                 = $rewardCustomer->toArray();
         $data['point_spent']  = $rewardCustomer->getPointSpent();
         $data['point_earned'] = $rewardCustomer->getPointEarned();
+        $data['refer_code']   = $this->encrypt($customer->getId());
 
         $pointHelper = $this->helperData->getPointHelper();
         if ($this->helperData->getMaxPointPerCustomer()) {
@@ -104,5 +115,15 @@ class Account implements ResolverInterface
         $data['customer']     = $customer;
 
         return $data;
+    }
+
+    /**
+     * @param string|int $data
+     *
+     * @return string
+     */
+    public function encrypt($data)
+    {
+        return base64_encode($this->encryptor->encrypt((string) $data));
     }
 }
