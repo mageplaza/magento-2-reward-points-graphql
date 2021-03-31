@@ -275,3 +275,8 @@ type MpRewardInvitations {
   store_id: String @doc(description: "Store id")
   created_at: String @doc(description: "Created at")
 }
+
+## ========================================= Refer Code ==============================================================
+input CustomerInput {
+    mp_refer: String @doc(description: "Refer Code")
+}

@@ -33,4 +33,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\CustomerGraphQl\Model\Resolver\CreateCustomer">
+        <plugin name="mp_reward_refer_code" type="Mageplaza\RewardPointsGraphQl\Plugin\Model\Resolver\CreateCustomer"/>
+    </type>
 </config>
