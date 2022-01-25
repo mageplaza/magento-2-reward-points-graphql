@@ -61,7 +61,7 @@ class TransactionsByOrder extends AbstractGetList
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TransactionRepository $transactionRepository
     ) {
-        $this->transactionRepository       = $transactionRepository;
+        $this->transactionRepository = $transactionRepository;
 
         parent::__construct($searchCriteriaBuilder);
     }
