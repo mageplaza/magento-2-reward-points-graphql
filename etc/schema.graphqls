@@ -8,7 +8,7 @@ type Query {
 }
 
 ## ======================================== Customer ===================================================================
-type Customer {
+    type Customer {
     mp_reward:MpRewardCustomersOutput @doc(description: "Reward customer") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Account")
 }
 
@@ -279,4 +279,18 @@ type MpRewardInvitations {
 ## ========================================= Refer Code ==============================================================
 input CustomerInput {
     mp_refer: String @doc(description: "Refer Code")
+}
+
+type CustomerOrder {
+    mp_reward_earn: Int @doc(description: "Points earned") @resolver(class: "\\Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Orders\\MpReward")
+    mp_reward_spent: Int @doc(description: "Points spent") @resolver(class: "\\Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Orders\\MpReward")
+    transactions(
+        filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
+        pageSize: Int = 5 @doc(description: "How many items should be shown on the page?")
+        currentPage: Int = 1 @doc(description: "Allow page number to start from page 1")
+    ):MpRewardTransactionsListOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\TransactionsByOrder") @doc(description: "The query searches for reward customer.")
+}
+
+type OrderTotal {
+    mp_reward_discount: [Discount] @doc(description: "Discount for reward")
 }

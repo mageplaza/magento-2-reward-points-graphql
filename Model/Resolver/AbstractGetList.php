@@ -49,6 +49,7 @@ abstract class AbstractGetList implements ResolverInterface
 
     /**
      * AbstractGetList constructor.
+     *
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
     public function __construct(
@@ -100,7 +101,7 @@ abstract class AbstractGetList implements ResolverInterface
      * @return array
      * @throws GraphQlInputException
      */
-    private function getPageInfo($searchResult, $args)
+    protected function getPageInfo($searchResult, $args)
     {
         $totalPages  = ceil($searchResult->getTotalCount() / $args['pageSize']);
         $currentPage = $args['currentPage'];
