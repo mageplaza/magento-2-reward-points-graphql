@@ -284,6 +284,7 @@ input CustomerInput {
 type CustomerOrder {
     mp_reward_earn: Int @doc(description: "Points earned") @resolver(class: "\\Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Orders\\MpReward")
     mp_reward_spent: Int @doc(description: "Points spent") @resolver(class: "\\Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Orders\\MpReward")
+    mp_reward_discount: Int @doc(description: "Points spent") @resolver(class: "\\Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Orders\\MpReward")
     transactions(
         filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
         pageSize: Int = 5 @doc(description: "How many items should be shown on the page?")

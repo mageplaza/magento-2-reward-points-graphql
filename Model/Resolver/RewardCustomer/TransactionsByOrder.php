@@ -52,16 +52,23 @@ class TransactionsByOrder extends AbstractGetList
     protected $transactionRepository;
 
     /**
+     * @var Order
+     */
+    protected $order;
+
+    /**
      * TransactionsByOrder constructor.
-     *
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param TransactionRepository $transactionRepository
+     * @param Order $order
      */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        TransactionRepository $transactionRepository
+        TransactionRepository $transactionRepository,
+        Order $order
     ) {
         $this->transactionRepository = $transactionRepository;
+        $this->order                 = $order;
 
         parent::__construct($searchCriteriaBuilder);
     }
@@ -72,27 +79,25 @@ class TransactionsByOrder extends AbstractGetList
      * @param ResolveInfo $info
      * @param array|null $value
      * @param array|null $args
-     *
      * @return array
-     * @throws GraphQlInputException
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
-        if (!isset($value['model'])) {
-            return [];
-        }
-
-        if (isset($args['currentPage']) && $args['currentPage'] < 1) {
-            throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
-        }
-
-        if (isset($args['pageSize']) && $args['pageSize'] < 1) {
-            throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
-        }
-
         try {
             /** @var Order $order */
-            $order          = $value['model'];
+            $order = isset($value['model']) ? $value['model'] : null;
+            if (!$order) {
+                $order = $this->order->loadByIncrementId($value['increment_id']);
+            }
+
+            if (isset($args['currentPage']) && $args['currentPage'] < 1) {
+                throw new GraphQlInputException(__('currentPage value must be greater than 0.'));
+            }
+
+            if (isset($args['pageSize']) && $args['pageSize'] < 1) {
+                throw new GraphQlInputException(__('pageSize value must be greater than 0.'));
+            }
+
             $searchCriteria = $this->searchCriteriaBuilder->build($this->fieldName, $args);
             $searchCriteria->setCurrentPage($args['currentPage']);
             $searchCriteria->setPageSize($args['pageSize']);
