@@ -67,14 +67,12 @@ class OrderTotal
         }
 
         /** @var Order $order */
-        $order                        = $result['model'];
-        $result['mp_reward_discount'][] = [
-            'label'  => __('Reward Points'),
-            'amount' => [
-                'value'    => abs($order->getData('mp_reward_discount')),
-                'currency' => $order->getOrderCurrencyCode()
-            ]
-        ];;
+        $order                      = $result['model'];
+        $result['mp_reward_points'] = [
+            'earn'     => $order->getData('mp_reward_earn'),
+            'spent'    => $order->getData('mp_reward_spent'),
+            'discount' => abs($order->getData('mp_reward_discount'))
+        ];
 
         return $result;
     }

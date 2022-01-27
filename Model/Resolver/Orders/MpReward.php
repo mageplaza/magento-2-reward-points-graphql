@@ -75,7 +75,11 @@ class MpReward implements ResolverInterface
             if (isset($value['increment_id'])) {
                 $order = $this->orderFactory->create()->loadByIncrementId($value['increment_id']);
 
-                return $order->getData($field->getName());
+                return [
+                    'earn'     => $order->getData('mp_reward_earn'),
+                    'spent'    => $order->getData('mp_reward_spent'),
+                    'discount' => abs($order->getData('mp_reward_discount'))
+                ];
             }
 
             return null;
