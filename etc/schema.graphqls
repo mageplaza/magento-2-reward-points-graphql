@@ -8,7 +8,7 @@ type Query {
 }
 
 ## ======================================== Customer ===================================================================
-type Customer {
+    type Customer {
     mp_reward:MpRewardCustomersOutput @doc(description: "Reward customer") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Account")
 }
 
@@ -107,6 +107,7 @@ type MpRewardCustomersOutput {
     notification_expire : String @doc(description: "Notification of expire")
     balance_limitation : String @doc(description: "Balance limitation")
     earn_point_expire: String @doc(description: "Earn point expire")
+    refer_code: String @doc(description: "Refer code")
     current_exchange_rates: RewardExchangeRate @doc(description: "Current exchange rates") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\Rate")
     transactions(
             filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
@@ -273,4 +274,28 @@ type MpRewardInvitations {
   invited_discount: Float @doc(description: "Invited discount")
   store_id: String @doc(description: "Store id")
   created_at: String @doc(description: "Created at")
+}
+
+## ========================================= Refer Code ==============================================================
+input CustomerInput {
+    mp_refer: String @doc(description: "Refer Code")
+}
+
+type CustomerOrder {
+    mp_reward_points: MpRewardPointsOutput @doc(description: "GetMageplaza Reward Points Information(compatible with 2.3.x).") @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\Orders\\MpReward")
+    transactions(
+        filter: MpRewardTransactionsFilterInput @doc(description: "Identifies which reward customer transaction attributes to search for and return.")
+        pageSize: Int = 5 @doc(description: "How many items should be shown on the page?")
+        currentPage: Int = 1 @doc(description: "Allow page number to start from page 1.")
+    ):MpRewardTransactionsListOutput @resolver(class: "Mageplaza\\RewardPointsGraphQl\\Model\\Resolver\\RewardCustomer\\TransactionsByOrder") @doc(description: "The query searches for reward customer.")
+}
+
+type OrderTotal {
+    mp_reward_points: MpRewardPointsOutput @doc(description: "Mageplaza Reward Points Information.")
+}
+
+type MpRewardPointsOutput {
+    earn: Int @doc(description: "Points earned.")
+    spent: Int @doc(description: "Points spent.")
+    discount: Float @doc(description: "Discount for reward.")
 }
