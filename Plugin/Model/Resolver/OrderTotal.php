@@ -71,7 +71,7 @@ class OrderTotal
         $result['mp_reward_points'] = [
             'earn'     => $order->getData('mp_reward_earn'),
             'spent'    => $order->getData('mp_reward_spent'),
-            'discount' => abs($order->getData('mp_reward_discount'))
+            'discount' => abs((float)$order->getData('mp_reward_discount'))
         ];
 
         return $result;
