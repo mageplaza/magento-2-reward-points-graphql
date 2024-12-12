@@ -2,7 +2,7 @@
   "name": "mageplaza/module-reward-points-graphql",
   "description": "Magento 2 Reward Points Graphql Extension",
   "type": "magento2-module",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "proprietary",
   "authors": [
     {
